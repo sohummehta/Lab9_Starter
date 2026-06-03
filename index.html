@@ -220,17 +220,16 @@
     });
 
 
-    // Step 5 - Global error handler
-    window.onerror = function(message, source, lineno, colno, error) {
-      console.log("Global error caught:", message);
-      return true;
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.log("An error happened");
+      return false;
     };
 
-    triggerError.addEventListener('click', () => {
-      setTimeout(() => {
-        notARealVariable;
-      }, 0);
-    });
+    function handleGlobalErrorClick() {
+      boom;
+    }
+
+    triggerError.addEventListener('click', handleGlobalErrorClick);
   </script>
 </body>
 
