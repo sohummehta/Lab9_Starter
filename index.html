@@ -2,6 +2,13 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "bc13a859c7dc4c3894b8c1ce67974655"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -88,20 +95,141 @@
   </main>
 
   <script>
-    let form = document.querySelector('form');
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
-    });
-
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    let consoleLog = errorBtns[0];
+    let consoleError = errorBtns[1];
+    let consoleCount = errorBtns[2];
+    let consoleWarn = errorBtns[3];
+    let consoleAssert= errorBtns[4];
+    let consoleClear= errorBtns[5];
+    let consoleDir= errorBtns[6];
+    let consoleDirxml = errorBtns[7];
+    let consoleGroupStart = errorBtns[8];
+    let consoleGroupEnd = errorBtns[9];
+    let consoleTable = errorBtns[10];
+    let startTimer = errorBtns[11];
+    let endTimer= errorBtns[12];
+    let consoleTrace = errorBtns[13];
+    let triggerError = errorBtns[14];
+
+    consoleLog.addEventListener('click', () => {
+      console.log("Hello from console log!");
+    });
+
+    consoleError.addEventListener('click', () => {
+      console.error("This is a console error message");
+    });
+
+    consoleCount.addEventListener('click', () => {
+      console.count("button clicked");
+    });
+
+    consoleWarn.addEventListener('click', () => {
+      console.warn("This is a console warning!");
+    });
+
+    consoleAssert.addEventListener('click', () => {
+      console.assert(1 === 2, "Assertion failed: 1 does not equal 2");
+    });
+
+    consoleClear.addEventListener('click', () => {
+      console.clear();
+    });
+
+    consoleDir.addEventListener('click', () => {
+      console.dir(document.querySelector('form'));
+    });
+
+    consoleDirxml.addEventListener('click', () => {
+      console.dirxml(document.querySelector('form'));
+    });
+
+    consoleGroupStart.addEventListener('click', () => {
+      console.group("My Group");
+      console.log("item 1");
+      console.log("item 2");
+    });
+
+    consoleGroupEnd.addEventListener('click', () => {
+      console.groupEnd();
+    });
+
+    consoleTable.addEventListener('click', () => {
+      console.table([{ name: "Alice", grade: 90 }, { name: "Bob", grade: 85 }]);
+    });
+
+    startTimer.addEventListener('click', () => {
+      console.time("myTimer");
+    });
+
+    endTimer.addEventListener('click', () => {
+      console.timeEnd("myTimer");
+    });
+
+    consoleTrace.addEventListener('click', () => {
+      console.trace("Trace called here");
+    });
+
+    class ValidationError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "ValidationError";
+      }
+    }
+
+    class DivisionByZeroError extends Error {
+      constructor() {
+        super("Can't divide by zero");
+        this.name = "DivisionByZeroError";
+      }
+    }
+
+    let output = document.querySelector('output');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      let firstNum = document.querySelector('#first-num').value;
+      let secondNum = document.querySelector('#second-num').value;
+      let operator = document.querySelector('#operator').value;
+
+      try {
+        if (firstNum === '' || secondNum === '') {
+          throw new ValidationError("Please fill in both numbers");
+        }
+        if (isNaN(firstNum) || isNaN(secondNum)) {
+          throw new ValidationError("Inputs must be numbers");
+        }
+        if (operator === '/' && Number(secondNum) === 0) {
+          throw new DivisionByZeroError();
+        }
+
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+
+      } catch (err) {
+        console.error(err.name + ": " + err.message);
+        output.innerHTML = err.message;
+      } finally {
+        console.log("calculate was attempted");
+      }
+    });
+
+
+    // Step 5 - Global error handler
+    window.onerror = function(message, source, lineno, colno, error) {
+      console.log("Global error caught:", message);
+      return true;
+    };
+
+    triggerError.addEventListener('click', () => {
+      setTimeout(() => {
+        notARealVariable;
+      }, 0);
+    });
   </script>
 </body>
 
